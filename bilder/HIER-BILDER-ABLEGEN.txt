@@ -1,42 +1,38 @@
-BILDMATERIAL HIER ABLEGEN
-=========================
+BILDMATERIAL
+============
 
 STAND: Logo und die beiden Fotos sind da und eingebunden.
-Die hero*.jpg sind daraus erzeugt - die Original-PNGs bleiben als
-Quellmaterial fuer die Creatives liegen.
 
-Die Seite sucht die Dateien automatisch. Fehlt eine Datei, bleibt der
-Platzhalter stehen – es gibt nie ein kaputtes Bild.
+  logo.svg        Logo, weisse Variante -> Topbar, Hero, Footer
+  pmh_Logo.pdf    Original-Logo vektoriell, Quelle fuer Farben + Creatives
+  _34A2425.JPG    Kollege im PMH-Shirt an der Voumard-Rundschleifmaschine
+  _34A2508.JPG    Funkenflug am Schleifbock
 
+Daraus erzeugt (1920 px, JPEG q82, progressiv):
 
-1) LOGO  (wird in Topbar, Hero und Footer eingesetzt)
-   Gesucht wird in dieser Reihenfolge, die erste gefundene gewinnt:
+  hero.jpg              aus _34A2425   -> Startbild ohne Deeplink
+  hero-montage.jpg      aus _34A2425   -> bei ?stelle=montage
+  hero-schleifer.jpg    aus _34A2508   -> bei ?stelle=schleifer, GESPIEGELT
 
-     bilder/pmh-heyn-logo-weiss.png     <- bevorzugt
-     bilder/logo-weiss.png
-     bilder/pmh-heyn-logo.png
-     bilder/logo.png
-     bilder/logo.svg
-
-   WICHTIG: Topbar, Hero und Footer sind dunkel (Anthrazit). Gebraucht
-   wird deshalb die WEISSE / negative Logovariante, am besten als PNG
-   mit transparentem Hintergrund (Hoehe mind. 180 px) oder als SVG.
-   Solange kein Logo da ist, steht dort der Schriftzug "PMH".
+Warum gespiegelt: im Original liegt der Funkenflug links, also genau hinter
+dem dunklen Textpanel. Gespiegelt faellt er in die sichtbare rechte Haelfte.
 
 
-2) HERO-FOTOS  (grosses Bild im Kopfbereich)
-
-     bilder/hero.jpg              <- allgemein, ohne Stellen-Deeplink
-     bilder/hero-schleifer.jpg    <- bei ?stelle=schleifer
-     bilder/hero-montage.jpg      <- bei ?stelle=montage
-
-   Querformat, mind. 1600 px breit. Das Motiv sollte rechts stehen –
-   links liegt der dunkle Textbereich darueber.
-   Ohne Datei bleibt der Farbverlauf stehen (sieht ebenfalls sauber aus).
+WEITERES MATERIAL
+-----------------
+Fuer Schritt 2 (Creatives, Facebook-Profil- und -Titelbild) einfach hier
+ablegen, Dateinamen egal. Fuer die Facebook-Bilder wird das Original-Logo
+unveraendert gebraucht - pmh_Logo.pdf und logo.svg liegen bereits hier.
 
 
-3) FUER SCHRITT 2 (Creatives, Facebook-Profil- und -Titelbild)
-   Einfach alles weitere Material hier ablegen, Dateinamen egal.
-   Fuer die Facebook-Bilder wird das Original-Logo unveraendert gebraucht
-   (nicht nachgebaut, nicht eingefaerbt, nicht verzerrt) – am besten
-   zusaetzlich als SVG oder hochaufloestes PNG.
+LOGO AUSTAUSCHEN
+----------------
+Gesucht wird in dieser Reihenfolge, die erste gefundene gewinnt:
+
+  pmh-heyn-logo-weiss.png
+  logo-weiss.png
+  pmh-heyn-logo.png
+  logo.png
+  logo.svg            <- aktuell im Einsatz
+
+Topbar, Hero und Footer sind dunkel: es wird die WEISSE Variante gebraucht.
