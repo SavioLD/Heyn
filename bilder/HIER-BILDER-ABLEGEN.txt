@@ -1,0 +1,38 @@
+BILDMATERIAL HIER ABLEGEN
+=========================
+
+Die Seite sucht die Dateien automatisch. Fehlt eine Datei, bleibt der
+Platzhalter stehen – es gibt nie ein kaputtes Bild.
+
+
+1) LOGO  (wird in Topbar, Hero und Footer eingesetzt)
+   Gesucht wird in dieser Reihenfolge, die erste gefundene gewinnt:
+
+     bilder/pmh-heyn-logo-weiss.png     <- bevorzugt
+     bilder/logo-weiss.png
+     bilder/pmh-heyn-logo.png
+     bilder/logo.png
+     bilder/logo.svg
+
+   WICHTIG: Topbar, Hero und Footer sind dunkel (Anthrazit). Gebraucht
+   wird deshalb die WEISSE / negative Logovariante, am besten als PNG
+   mit transparentem Hintergrund (Hoehe mind. 180 px) oder als SVG.
+   Solange kein Logo da ist, steht dort der Schriftzug "PMH".
+
+
+2) HERO-FOTOS  (grosses Bild im Kopfbereich)
+
+     bilder/hero.jpg              <- allgemein, ohne Stellen-Deeplink
+     bilder/hero-schleifer.jpg    <- bei ?stelle=schleifer
+     bilder/hero-montage.jpg      <- bei ?stelle=montage
+
+   Querformat, mind. 1600 px breit. Das Motiv sollte rechts stehen –
+   links liegt der dunkle Textbereich darueber.
+   Ohne Datei bleibt der Farbverlauf stehen (sieht ebenfalls sauber aus).
+
+
+3) FUER SCHRITT 2 (Creatives, Facebook-Profil- und -Titelbild)
+   Einfach alles weitere Material hier ablegen, Dateinamen egal.
+   Fuer die Facebook-Bilder wird das Original-Logo unveraendert gebraucht
+   (nicht nachgebaut, nicht eingefaerbt, nicht verzerrt) – am besten
+   zusaetzlich als SVG oder hochaufloestes PNG.
