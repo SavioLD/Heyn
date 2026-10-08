@@ -101,10 +101,37 @@ Nachgemessen (hellster Hintergrundpunkt je Textblock, weiße Schrift):
 
 | | Desktop | Desktop (Schleifer) | Handy |
 |---|---|---|---|
-| Headline | 9,4:1 | 9,5:1 | 12,9:1 |
-| Fließtext | 12,1:1 | 13,1:1 | 13,3:1 |
+| Headline | 9,4:1 | 9,5:1 | 10,5:1 |
+| Fließtext | 12,1:1 | 13,1:1 | 11,4:1 |
 
 WCAG AA verlangt 3,0:1 für große und 4,5:1 für normale Schrift.
+
+### Hero auf dem Handy
+
+Mobil lag der Schleier zuerst bei 84–95 % Deckung – vom Foto war praktisch
+nichts zu sehen. Ein gleichmäßiger Schleier lässt sich dabei auch nicht
+nennenswert senken: wegen der hellen Glanzstellen auf der Maschine braucht
+jeder Textblock rund **82 %** Deckung, sonst reißt der Kontrast.
+
+Gelöst ist das über die Fläche statt über die Stärke:
+
+- `.hero__logo` ist mobil ausgeblendet – die Topbar zeigt das Logo ohnehin.
+  Das spart Platz und einen Kontrastfall.
+- `.hero__panel` bekommt `padding-top:215px`. Der Text rutscht nach unten,
+  oben bleibt rund ein Drittel der Höhe **freies Foto**.
+- Der Schleier in `.hero__panel::before` ist oben transparent und zieht erst
+  zum Textbereich hin hoch.
+- `background-position:72% center` zeigt im Band den Kollegen bzw. den
+  Funkenflug statt der hellen Maschinenflanke.
+
+Die Verlaufsstops stehen bewusst in **Pixeln, nicht in Prozent**: der Text
+beginnt immer bei 215 px, die Hero-Höhe schwankt aber mit Textmenge und
+Displaybreite. Prozentstops rutschen auf schmalen Geräten unter den
+Textanfang.
+
+Nachgemessen von 320 bis 760 px Breite, beide Stellen: Fotoband **3,5-mal
+heller** als vorher (mittlere Helligkeit 0,08 → 0,27), schlechtester
+Textkontrast **10,8:1**.
 
 ## Stellen pflegen
 

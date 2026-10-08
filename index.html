@@ -139,9 +139,26 @@ img{max-width:100%;display:block}
 .hero__reassure svg{width:16px;height:16px;stroke:var(--brand-light)}
 @media(max-width:820px){
   .hero__inner{min-height:0}
-  .hero__panel{flex:1 1 100%;max-width:none;padding:100px 22px 46px}
-  .hero__panel::before{inset:0 -18px;width:auto;border-radius:0;background:linear-gradient(180deg,rgba(20,19,8,.80) 0%,rgba(32,30,14,.89) 100%)}
-  .hero__media::after{background:linear-gradient(180deg,rgba(20,19,8,.2),rgba(20,19,8,.55))}
+  /* Mobil zeigt die Topbar das Logo bereits – im Hero ist es doppelt.
+     Ausgeblendet macht es Platz fuer das Fotoband und spart einen
+     Kontrastfall. Die Texthoehe bleibt dadurch unveraendert. */
+  .hero__logo{display:none}
+  /* Das grosse padding-top schiebt den Text nach unten: oben bleibt rund
+     ein Drittel der Hoehe reines Foto. */
+  .hero__panel{flex:1 1 100%;max-width:none;padding:215px 22px 46px}
+  /* Schleier NUR dort, wo Text steht. Oben transparent, dann zum
+     Textbereich hin hochgezogen. Die Stufen sind ausgemessen (siehe
+     README): ab Textbeginn liegt die Gesamtdeckung ueber 82 Prozent,
+     damit weisse Schrift auch auf dem hellsten Bildpunkt 4.5:1 haelt. */
+  /* Stops in PIXELN, nicht in Prozent: der Text beginnt immer bei 215px
+     (padding-top), die Hoehe des Hero schwankt aber mit der Textmenge und
+     der Displaybreite. Prozentstops wuerden auf schmalen Geraeten unter
+     den Textanfang rutschen. */
+  .hero__panel::before{inset:0 -18px;width:auto;border-radius:0;background:linear-gradient(180deg,rgba(20,19,8,0) 0,rgba(20,19,8,0) 120px,rgba(20,19,8,.38) 168px,rgba(20,19,8,.74) 198px,rgba(20,19,8,.81) 225px,rgba(20,19,8,.81) 100%)}
+  /* leichter Grundschleier, damit das Foto Tiefe behaelt statt auszubleichen */
+  .hero__media::after{background:linear-gradient(180deg,rgba(20,19,8,.14) 0%,rgba(20,19,8,.20) 100%)}
+  /* Ausschnitt nach rechts: dort steht der Kollege bzw. der Funkenflug */
+  .hero__media{background-position:72% center}
 }
 
 /* ---------- trust band ---------- */
