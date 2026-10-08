@@ -105,7 +105,12 @@ img{max-width:100%;display:block}
 /* ---------- HERO ---------- */
 .hero{position:relative;overflow:hidden;background:var(--brand-900);padding:0}
 .hero__media{position:absolute;inset:0;background-color:#101922;background-image:var(--grad);background-size:cover;background-position:center}
-.hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,22,30,.4),transparent 60%)}
+/* Lesbarkeits-Schleier. Der geschwungene Panel-Verlauf endet je nach
+   Viewport vor dem rechten Textrand – ohne diesen Schleier stuende die
+   weisse Schrift teilweise direkt auf dem hellen Foto. Die Stufen sind
+   so gewaehlt, dass die gesamte Textspalte auch beim hellsten Bildpunkt
+   ueber 4.5:1 bleibt, das Motiv rechts aber sichtbar bleibt. */
+.hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,19,26,.94) 0%,rgba(12,19,26,.91) 30%,rgba(12,19,26,.82) 48%,rgba(12,19,26,.46) 64%,rgba(12,19,26,.14) 80%,rgba(12,19,26,0) 100%)}
 /* Eigener Stacking-Kontext: sonst ueberdeckt .hero__media den Abdunkler
    hinter dem Text (z-index:-1) und der Kontrast bricht ein. */
 .hero .shell{position:relative;z-index:1}
@@ -994,6 +999,10 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#d3d9df}
   var steps = [], TOTAL = 0, current = 1, submitting = false, locked = false;
   var aktiveFragen = [];   /* Fragen der aktuell gewaehlten Stelle */
   var aktiveStelle = null;
+  /* true, sobald der Bewerber die Stelle wirklich gewaehlt hat (Auswahl,
+     Stellenkarte oder Deeplink). Die Vorbelegung beim Laden zaehlt NICHT –
+     sonst zeigt der Hero das Bild der ersten Stelle statt des allgemeinen. */
+  var stelleGewaehlt = false;
 
   /* ---------------------------------------------------------------------
      SCREENING-FRAGEN JE STELLE RENDERN
@@ -1147,7 +1156,6 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#d3d9df}
   function applyStelle(job, auswahlAusblenden){
     aktiveStelle = job;
     renderFragen(job);
-    setHeroBild(job.key);
     if (auswahlAusblenden){ stepStelle.hidden = true; stepStelle.classList.remove("is-active"); }
     rebuildSteps();
   }
@@ -1158,6 +1166,7 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#d3d9df}
     var c = checked("stelle"); if (!c) return;
     var job = jobByKey(c.getAttribute("data-key")); if (!job) return;
     applyStelle(job, false);
+    stelleGewaehlt = true; setHeroBild(job.key);
     render();
   });
 
@@ -1167,6 +1176,7 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#d3d9df}
     radio.checked = true;
     radio.closest(".choice-grid").querySelectorAll(".choice").forEach(function(c){ c.classList.toggle("is-selected", c.querySelector("input").checked); });
     applyStelle(job, true);
+    stelleGewaehlt = true; setHeroBild(key);
     current = 1; render();
     return true;
   }
@@ -1242,7 +1252,7 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#d3d9df}
   bindChoiceGrids(form);
   /* Vorbelegung, damit Schrittzahl und Fortschritt von Anfang an stimmen.
      Bei nur einer Stelle entfaellt der Auswahlschritt komplett. */
-  if (JOBS.length < 2){ applyStelle(JOBS[0], true); var r0=form.querySelector('input[name="stelle"]'); if(r0) r0.checked=true; }
+  if (JOBS.length < 2){ applyStelle(JOBS[0], true); stelleGewaehlt = true; var r0=form.querySelector('input[name="stelle"]'); if(r0) r0.checked=true; }
   else applyStelle(JOBS[0], false);
 
   /* Deeplink aus der Anzeige: …/?stelle=schleifer | montage */
@@ -1257,7 +1267,7 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#d3d9df}
     setStelle(hit.key);
   })();
 
-  setHeroBild(aktiveStelle ? aktiveStelle.key : "");
+  setHeroBild(stelleGewaehlt && aktiveStelle ? aktiveStelle.key : "");
   render();
 })();
 </script>

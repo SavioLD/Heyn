@@ -24,16 +24,57 @@ weil `www.pmh-heyn.de` dort durch die Netzwerk-Policy gesperrt war:
 
 | Was | Wo in `index.html` | Status |
 |---|---|---|
-| Markenfarben (`--brand` …) | `:root`-Block, ganz oben | **Platzhalter** – Industrie-Blau/Anthrazit |
-| Schriften (`--f-display`, `--f-body`) | `:root`-Block | **Platzhalter** – Barlow / Inter |
-| Logo | `bilder/` (wird automatisch gefunden) | fehlt noch, Schriftzug „PMH" als Fallback |
+| Logo | `bilder/logo.svg` | ✅ eingebunden (weiße Variante, passt auf die dunklen Flächen) |
+| Hero-Fotos | `bilder/hero*.jpg` | ✅ eingebunden |
+| Markenfarben (`--brand` …) | `:root`-Block, ganz oben | **noch offen** – siehe unten |
+| Schriften (`--f-display`, `--f-body`) | `:root`-Block | **noch offen** – Barlow / Inter gesetzt |
 | E-Mail-Adresse | `KONTAKT.email` | `info@pmh-heyn.de` – bitte bestätigen |
 | Datenschutz-Link | `KONTAKT.datenschutz` | Standardpfad – bitte bestätigen |
 | Impressum-Link | `KONTAKT.impressum` | Standardpfad – bitte bestätigen |
 | Benefits | `bieten` je Stelle | Stand: nur das, was gesichert ist |
 
+**Zu den Farben:** Das gelieferte Logo ist die reine Negativ-Variante
+(`fill:#fff`) und enthält deshalb keine Markenfarbe. Gesetzt ist aktuell
+ein Blau (`#0b63a8`), das im selben Farbtonbereich liegt wie das Material
+auf den Fotos (gemessen: `#556b86`, H213 – die Seite harmoniert also mit
+dem Bildmaterial). Sobald die offiziellen Hexwerte vorliegen: eine Zeile
+im `:root`-Block.
+
 Telefonnummer, Anschrift, Gründungsjahr, ISO 9001 und Mitarbeiterzahl sind
 aus öffentlichen Quellen verifiziert.
+
+## Bildmaterial
+
+| Datei | Motiv | Einsatz |
+|---|---|---|
+| `logo.svg` | PMH-Logo, weiß | Topbar, Hero, Footer – automatisch erkannt |
+| `hero.jpg` | Spannsystem auf der Messmaschine | Startbild ohne Deeplink |
+| `hero-schleifer.jpg` | Präzisionswerkzeug, Nahaufnahme | bei `?stelle=schleifer` |
+| `hero-montage.jpg` | Spannsystem auf der Messmaschine | bei `?stelle=montage` |
+
+Die `hero*.jpg` sind aus den gelieferten PNGs erzeugt (JPEG q85, progressiv):
+rund 1 MB → 70–83 KB pro Bild, spürbar schneller auf dem Handy. Die
+Original-PNGs bleiben als Quellmaterial für die Creatives im Ordner liegen.
+
+### Kontrast im Hero
+
+Der geschwungene Panel-Verlauf endet je nach Viewport vor dem rechten
+Textrand. Ohne zusätzlichen Schleier stünde die weiße Schrift teilweise
+direkt auf dem hellen Foto – gemessen waren das **1,25:1**. Der Verlauf in
+`.hero__media::after` ist deshalb so abgestuft, dass die ganze Textspalte
+abgedeckt ist, das Motiv rechts aber sichtbar bleibt.
+
+Nachgemessen (hellster Hintergrundpunkt je Textblock, weiße Schrift):
+
+| | Desktop | Desktop (Schleifer) | Handy |
+|---|---|---|---|
+| Headline | 10,7:1 | 8,7:1 | 13,2:1 |
+| Fließtext | 13,4:1 | 11,9:1 | 12,6:1 |
+
+WCAG AA verlangt 3,0:1 für große und 4,5:1 für normale Schrift – alle Werte
+liegen deutlich darüber. Mobil liegt der Schleier bewusst hoch (Lesbarkeit
+bei Sonnenlicht); wer dort mehr vom Foto sehen will, senkt die beiden
+Alphawerte in `.hero__panel::before` innerhalb `@media(max-width:820px)`.
 
 ## CI anpassen
 

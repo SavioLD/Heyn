@@ -1,6 +1,10 @@
 BILDMATERIAL HIER ABLEGEN
 =========================
 
+STAND: Logo und die beiden Fotos sind da und eingebunden.
+Die hero*.jpg sind daraus erzeugt - die Original-PNGs bleiben als
+Quellmaterial fuer die Creatives liegen.
+
 Die Seite sucht die Dateien automatisch. Fehlt eine Datei, bleibt der
 Platzhalter stehen – es gibt nie ein kaputtes Bild.
 
