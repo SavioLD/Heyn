@@ -132,7 +132,7 @@ const FOTO = {
 /* ---------- Formate ---------- */
 const FORMATE = {
   '4x5':  { w:1080, h:1350, padTop:80,  padBottom:96,  padX:86, headPx:84, subPx:33 },
-  '9x16': { w:1080, h:1920, padTop:300, padBottom:400, padX:86, headPx:94, subPx:35 }
+  '9x16': { w:1080, h:1920, padTop:300, padBottom:330, padX:86, headPx:94, subPx:35 }
 };
 
 /* ---------- Template ---------- */
@@ -167,11 +167,18 @@ body{font-family:Inter,sans-serif;color:#fff;position:relative;overflow:hidden;b
 .logo-img{height:${Math.round(fmt.w*0.10)}px;width:auto;object-fit:contain;object-position:left;position:relative}
 /* Eigener Verlauf am Textblock: er beginnt dort, wo der Text beginnt,
    unabhaengig von der Textmenge. Der Aufblendbereich liegt komplett im
-   padding-top, damit schon die Eyebrow auf voller Deckung sitzt. */
+   padding-top, damit schon die Eyebrow auf voller Deckung sitzt.
+   Die Stops stehen in PIXELN, nicht in Prozent - die Hoehe des Blocks
+   haengt von der Textmenge ab.
+   Der Block laeuft per negativem margin-bottom bis zur Unterkante des
+   Creatives durch. Vorher endete die dunkle Flaeche dort, wo der Text
+   endete, darunter wurde das Foto wieder hell - das sah aus wie ein
+   zweites, angeschnittenes Bild. */
 .mitte{margin-top:auto;position:relative;margin-left:-${fmt.padX}px;margin-right:-${fmt.padX}px;
-  padding:170px ${fmt.padX}px 44px;
-  background:linear-gradient(180deg,rgba(18,17,7,0) 0%,rgba(18,17,7,.70) 46%,rgba(18,17,7,.93) 82%,rgba(18,17,7,.96) 100%),
-             linear-gradient(180deg,rgba(18,17,7,0) 0%,rgba(18,17,7,0) 30%,rgba(18,17,7,.55) 62%,rgba(18,17,7,.72) 100%)}
+  margin-bottom:-${fmt.padBottom}px;
+  padding:170px ${fmt.padX}px ${fmt.padBottom + 44}px;
+  background:linear-gradient(180deg,rgba(18,17,7,0) 0,rgba(18,17,7,.46) 72px,
+    rgba(18,17,7,.84) 140px,rgba(18,17,7,.91) 186px,rgba(18,17,7,.93) 100%)}
 /* Eyebrow als dunkles Pill: Gold hat Luminanz .36 und braucht als kleine
    Schrift einen nahezu schwarzen Untergrund – den gibt ein Foto nicht her.
    Das Pill bringt ihn mit, unabhaengig vom Motiv. */
@@ -306,7 +313,7 @@ async function shot(markup, w, h, datei){
       return o;
     });
     await page.evaluate(()=>{
-      document.querySelectorAll('.mitte > *, .safe > *, .logo-img, .logo img').forEach(e=>e.style.visibility='hidden');
+      document.querySelectorAll('.mitte > *, .safe > *, .logo-img, .logo img, .logo svg').forEach(e=>e.style.visibility='hidden');
     });
     await page.waitForTimeout(150);
     const bg = datei.replace('.png','-bg.png');

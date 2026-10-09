@@ -41,7 +41,13 @@ dunklen Pill, das ihren Untergrund selbst mitbringt.
 **Der Textblock braucht seinen eigenen Schleier.** Wo er beginnt, hängt von
 der Textmenge ab – ein Verlauf im Canvas-Raster trifft ihn mal und mal
 nicht. `.mitte` trägt den Verlauf jetzt selbst, der Aufblendbereich liegt
-komplett im `padding-top`.
+komplett im `padding-top`, und die Stops stehen in Pixeln statt Prozent.
+
+**Der Schleier muss bis zur Unterkante durchlaufen.** Sonst endet die dunkle
+Fläche dort, wo der Text endet, und darunter wird das Foto wieder hell – das
+sieht aus wie ein zweites, angeschnittenes Bild. Im 9:16 war der Effekt
+deutlich (330 px Fußraum), im 4:5 als schmaler Streifen. `.mitte` zieht sich
+jetzt per negativem `margin-bottom` bis zum unteren Rand.
 
 Geprüft wird das nicht per Augenmaß:
 
