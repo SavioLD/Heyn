@@ -691,6 +691,13 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dad7cb}
     impressum:   "https://www.pmh-heyn.de/impressum/"     /* ⚠ bitte bestaetigen */
   };
 
+  /* Web3Forms verschickt jede abgeschlossene Bewerbung zusaetzlich per
+     Mail. Der Access Key ist laut Web3Forms ausdruecklich oeffentlich und
+     fuer Client-Code gedacht. Empfaenger-Adresse, Autoresponder und
+     Spamschutz stellt ihr im Web3Forms-Dashboard unter Settings ein. */
+  var WEB3FORMS_KEY = "9b7664fe-ba2b-4bc6-9d07-da9e1b065669";
+  var WEB3FORMS_URL = "https://api.web3forms.com/submit";
+
   /* Fallback-Webhook: greift nur, falls eine Stelle einmal keine eigene
      Lead-Table-Kachel hat. Aktuell hat jede Stelle ihre eigene. */
   var WEBHOOK_URL = "https://api-v2.lead-table.com/api/webhook/generic/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0YWJsZUlEIjoiNmFjNzgxZDFmNjU3MTI1NjYxMGQ4M2ExIiwiY3VzdG9tZXJJRCI6IjZhYzc4MTc4YmNmOTRkY2ZiZDRjMDBjYiIsImFnZW5jeUlEIjoiNjliZDc3NzVlNGQxN2IzOGVkNjUzZDE2IiwiaWF0IjoxNzkxNDU5NzkzfQ.8-RUz7MV0d2G8YxTQkGZdUHYM97TOY9hr17hSLvdnvU";
@@ -1245,24 +1252,72 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dad7cb}
     return data;
   }
 
+  /* =====================================================================
+     MAIL-PAYLOAD (Web3Forms)
+     Bewusst ein ANDERES Payload als fuer die Lead Table: Web3Forms setzt
+     die Feldnamen 1:1 als Beschriftung in die Mail, deshalb hier lesbare
+     deutsche Labels statt der technischen Feldnamen. Der Betreff enthaelt
+     den Namen – das betrifft nur die Mail und nie die Lead Table, dort
+     bleiben Vorname und Nachname getrennt und ohne Sammelfeld.
+     ===================================================================== */
+  function mailPayload(d){
+    var p = {
+      access_key: WEB3FORMS_KEY,
+      subject:    "Neue Bewerbung: " + d.stelle + " – " + d.vorname + " " + d.nachname,
+      from_name:  "Karriereseite PMH Heyn",
+      replyto:    d.email          /* Antwort geht direkt an den Bewerber */
+    };
+    p["Stelle"]   = d.stelle;
+    p["Vorname"]  = d.vorname;
+    p["Nachname"] = d.nachname;
+    p["Telefon"]  = d.telefon;
+    p["E-Mail"]   = d.email;
+    aktiveFragen.forEach(function(q){
+      p[q.label + (q.pflicht ? "" : " (optional)")] = selectedValue(q.field);
+    });
+    p["Optionale Kriterien nicht erfüllt"] = d.nicht_erfuellt;
+    p["Eingegangen am"] = d.datum;
+    p["Quelle"]         = d.quelle;
+    p["Seite"]          = d.seite;
+    return p;
+  }
+
   function submit(){
     /* Honeypot: Bots fuellen das versteckte Feld – still beenden, kein Lead. */
     if (form.querySelector('input[name="firma_website"]').value){ finishSuccess(); return; }
     submitting = true; btnNext.disabled = true; btnNext.textContent = "Wird gesendet …";
     errBox.classList.remove("is-visible");
+
     var data = collect(), payload = JSON.stringify(data);
-    var job = jobByTitle(data.stelle);
-    var url = (job && job.webhook) || WEBHOOK_URL;
-    fetch(url,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:payload })
-      .then(function(res){ if(!res.ok) throw new Error("HTTP "+res.status); finishSuccess(); })
+    var job  = jobByTitle(data.stelle);
+    var url  = (job && job.webhook) || WEBHOOK_URL;
+
+    /* 1 · Lead Table – flaches Payload, je Stelle die eigene Kachel. */
+    var anLeadTable = fetch(url,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:payload })
+      .then(function(res){ if(!res.ok) throw new Error("HTTP "+res.status); })
       .catch(function(){
         /* Fallback fuer CORS-Preflight-Probleme: no-cors, text/plain. */
-        return fetch(url,{ method:"POST", mode:"no-cors", headers:{ "Content-Type":"text/plain" }, body:payload }).then(finishSuccess);
-      })
-      .catch(function(){
-        submitting=false; btnNext.disabled=false; btnNext.textContent="Bewerbung absenden";
-        errBox.classList.add("is-visible");
+        return fetch(url,{ method:"POST", mode:"no-cors", headers:{ "Content-Type":"text/plain" }, body:payload });
       });
+
+    /* 2 · Web3Forms – verschickt die Bewerbung zusaetzlich per Mail. */
+    var anMail = fetch(WEB3FORMS_URL,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json", "Accept":"application/json" },
+      body:JSON.stringify(mailPayload(data))
+    }).then(function(res){ if(!res.ok) throw new Error("HTTP "+res.status); });
+
+    /* Erfolg, sobald EIN Weg durchkommt. Der Bewerber soll nicht an einer
+       Fehlermeldung haengen bleiben, weil einer der beiden Dienste gerade
+       klemmt – und die Bewerbung ist dann ja auch angekommen. Fehler nur,
+       wenn beide fehlschlagen.
+       Kein Promise.allSettled: das gibt es erst ab Chrome 76 / Safari 13. */
+    function settle(pr){ return pr.then(function(){ return true; }, function(){ return false; }); }
+    Promise.all([settle(anLeadTable), settle(anMail)]).then(function(ok){
+      if (ok[0] || ok[1]) { finishSuccess(); return; }
+      submitting=false; btnNext.disabled=false; btnNext.textContent="Bewerbung absenden";
+      errBox.classList.add("is-visible");
+    });
   }
 
   /* Abschluss-Zustaende gelten nur fuer den aktuellen Besuch – ein

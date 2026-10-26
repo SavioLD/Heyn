@@ -236,6 +236,47 @@ der Name in der Lead Table doppelt.
 Nur abgeschlossene, qualifizierte Bewerbungen gehen an den Webhook.
 K.-o.-Abbrüche werden nicht übertragen.
 
+## Mailbenachrichtigung (Web3Forms)
+
+Jede abgeschlossene Bewerbung geht **zusätzlich** per Mail raus, über
+Web3Forms. Der Access Key steht in `WEB3FORMS_KEY` im `<script>` am
+Seitenende; er ist laut Web3Forms ausdrücklich öffentlich und für
+Client-Code gedacht.
+
+**Empfänger-Adresse, Autoresponder und Spamschutz stellt ihr im
+Web3Forms-Dashboard ein** (Form → Settings), nicht hier im Code.
+
+Die Mail bekommt ein **eigenes Payload**, nicht dasselbe wie die Lead
+Table: Web3Forms setzt die Feldnamen 1:1 als Beschriftung in die Mail,
+deshalb stehen dort lesbare deutsche Labels statt der technischen
+Feldnamen.
+
+| Feld | Inhalt |
+|---|---|
+| `subject` | „Neue Bewerbung: &lt;Stelle&gt; – &lt;Vorname&gt; &lt;Nachname&gt;" |
+| `from_name` | Karriereseite PMH Heyn |
+| `replyto` | E-Mail des Bewerbers – Antworten gehen direkt an ihn |
+| Stelle, Vorname, Nachname, Telefon, E-Mail | Kontaktdaten |
+| je Screening-Frage ein Feld | mit dem Klartext-Label der Frage |
+| Optionale Kriterien nicht erfüllt, Eingegangen am, Quelle, Seite | Kontext |
+
+Der volle Name steht **nur** im Mail-Betreff. In der Lead Table bleiben
+Vorname und Nachname getrennt, ohne Sammelfeld – daran ändert die
+Mailanbindung nichts.
+
+**Ausfallverhalten:** Beide Ziele werden parallel angesprochen. Der
+Bewerber sieht die Erfolgsansicht, sobald **einer** von beiden durchkommt –
+er soll nicht an einer Fehlermeldung hängen bleiben, weil ein Dienst gerade
+klemmt. Eine Fehlermeldung erscheint nur, wenn beide fehlschlagen.
+K.-o.-Abbrüche lösen **keinen** von beiden aus.
+
+Nachgemessen im Browser mit abgefangenen Requests: je Bewerbung genau ein
+Request pro Ziel, keine doppelten Felder, K.-o. sendet nichts, und der
+Ausfall eines Dienstes blockiert den anderen nicht.
+
+**Offen:** Ein echter Testeintrag steht noch aus – auch
+`api.web3forms.com` ist aus der Build-Umgebung nicht erreichbar.
+
 **Offen:** Ein echter Testeintrag steht noch aus – `api-v2.lead-table.com`
 war aus der Build-Umgebung nicht erreichbar. Die Payload-Struktur ist im
 Browser mit abgefangenem Request geprüft (Name getrennt, Telefon und E-Mail
